@@ -2,7 +2,7 @@
 
 This tutorial explains how to create the boilerplate theme at https://github.com/markirby/Boilerplate-Chester-WordPress-Theme. 
 
-It was designed to teach you how to easily create well structured MVC WordPress themes using the Chester framework. You can also use the boilerplate as a good starting point for your themes.
+It was designed to teach you how to easily create well structured responsive MVC WordPress themes using the Chester framework. You can also use the boilerplate as a good starting point for your themes.
 
 If you follow the tutorial you will end up with the code available in the repository, so there is no need to clone the repo unless you want to skip ahead.
 
@@ -42,4 +42,18 @@ Inside this file, load the reference to Chester/require.php. This file will in t
 	
 ## Create the style.css theme file
 
-Create a style.css file with
+Create a style.css file.
+
+	touch style.css
+	
+Add the details of your theme. We don't recommend adding the actual CSS here, we will instead set up some mobile first stylesheets that will work in IE6-9.
+
+	/*
+	Theme Name: Boilerplate Chester WordPress theme
+	Theme URI: http://markirby.github.com/Boilerplate-Chester-WordPress-Theme/
+	Description: A starting point for a MVC Chester theme
+	Author: @markirby
+	Version: 1.0
+
+	For customization, please replace the above
+	*/
