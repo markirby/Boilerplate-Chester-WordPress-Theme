@@ -70,3 +70,6 @@ Create an empty index.php file
 
 Now you are ready to install the theme and start building real templates. Jump into http://[SITENAME]/wp-admin/themes.php and select the Boilerplate theme.
 
+## Setup header and footer templates
+
+### Introduction to templates
