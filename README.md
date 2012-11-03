@@ -6,7 +6,9 @@ It was designed to teach you how to easily create well structured responsive MVC
 
 If you follow the tutorial you will end up with the code available in the repository, so there is no need to clone the repo unless you want to skip ahead.
 
-## Set up a new theme
+## Setup and install
+
+### Set up a new theme
 
 [Download and install WordPress](http://codex.wordpress.org/Installing_WordPress), preferably with at least one sample post and page set. The more posts you have the better you can test the site, so you could create a few example posts or use an existing site.
 
@@ -15,7 +17,7 @@ Create a new theme folder ready to begin.
 	cd {wordpress folder}
 	mkdir wp-content/themes/{wordpress theme name}
 
-## Install Chester
+### Install Chester
 
 Install Chester into a subfolder named Chester within a folder named lib. You could choose a different name, but we recommend lib as its a good standard.
 	
@@ -28,7 +30,7 @@ You could also add it as a submodule
 	
 To read more about Chester, checkout the full documentation at http://markirby.github.com/Chester-WordPress-MVC-Theme-Framework/. This tutorial will cover most areas though.
 
-## Load Chester using the functions.php file
+### Load Chester using the functions.php file
 
 Create a functions.php file
 
@@ -40,7 +42,7 @@ Inside this file, load the reference to Chester/require.php. This file will in t
 	require_once(dirname(__FILE__).'/lib/chester/require.php');
 	?>
 	
-## Create the style.css theme file
+### Create the style.css theme file
 
 Create a style.css file.
 
@@ -57,3 +59,14 @@ Add the details of your theme. We don't recommend adding the actual CSS here, we
 
 	For customization, please replace the above
 	*/
+	
+### Create the basic template, index.php
+
+Create an empty index.php file
+
+	touch index.php
+	
+### Install the theme
+
+Now you are ready to install the theme and start building real templates. Jump into http://[SITENAME]/wp-admin/themes.php and select the Boilerplate theme.
+
