@@ -27,3 +27,19 @@ You could also add it as a submodule
 	git submodule add git@github.com:markirby/Chester-WordPress-MVC-Theme-Framework.git lib/Chester
 	
 To read more about Chester, checkout the full documentation at http://markirby.github.com/Chester-WordPress-MVC-Theme-Framework/. This tutorial will cover most areas though.
+
+## Load Chester using the functions.php file
+
+Create a functions.php file
+
+	touch functions.php
+	
+Inside this file, load the reference to Chester/require.php. This file will in turn load all the other core Chester files, setting up the framework for easy access.
+
+	<?php 
+	require_once(dirname(__FILE__).'/lib/chester/require.php');
+	?>
+	
+## Create the style.css theme file
+
+Create a style.css file with
