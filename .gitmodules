@@ -1,0 +1,3 @@
+[submodule "lib/Chester"]
+	path = lib/Chester
+	url = git@github.com:markirby/Chester-WordPress-MVC-Theme-Framework.git
