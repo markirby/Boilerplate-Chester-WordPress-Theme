@@ -72,4 +72,4 @@ Now you are ready to install the theme and start building real templates. Jump i
 
 ## Setup header and footer templates
 
-### Introduction to templates
+
