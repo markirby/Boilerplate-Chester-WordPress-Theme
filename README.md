@@ -25,3 +25,5 @@ Install Chester into a subfolder named Chester within a folder named lib. You co
 You could also add it as a submodule
 
 	git submodule add git@github.com:markirby/Chester-WordPress-MVC-Theme-Framework.git lib/Chester
+	
+To read more about Chester, checkout the full documentation at http://markirby.github.com/Chester-WordPress-MVC-Theme-Framework/. This tutorial will cover most areas though.
