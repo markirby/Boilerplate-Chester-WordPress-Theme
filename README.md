@@ -198,3 +198,125 @@ Just a couple of closing tags needed:
 
 	    </body>
 	</html>
+
+## Create a controller to show post previews or a post
+
+To keep things simple we are going to create a single controller, SiteController, from which we will load data and templates to show a post, or an archive of posts. This controller can then be loaded from the various WordPress templates, which handles the routing for us.
+
+### Setting up the Controller
+
+Lets create the controller class.
+
+	touch mvc/controllers/site_controller.php
+
+The controller must extend ChesterBaseController so we can access the mustache templates.
+
+	<?php
+
+	class SiteController extends ChesterBaseController {
+
+
+	}
+
+	?>
+	
+### Add the showPostPreviews function 
+	
+Then inside the class we will create our function showPostPreviews.
+
+We are fetching the post data using getWordpressPostsFromLoop(), documented over at http://markirby.github.com/Chester-WordPress-MVC-Theme-Framework/#chesterwpcoredatahelpers-wp_core_data_helpers-php/getwordpresspostsfromloop-dateformat-false
+
+Then we render the template post_previews.mustache (which we will make next), passing in the fields posts, next_posts_link and previous_posts_link which we are creating ourselves using template tags.
+
+	public function showPostPreviews() {
+
+	  $posts = ChesterWPCoreDataHelpers::getWordpressPostsFromLoop();
+		
+		//we echo out the results of the renderPage function which outputs the content along with the header and footer
+	  echo $this->renderPage('post_previews', array(
+	    'posts' => $posts,
+	    'next_posts_link' => get_next_posts_link(),
+	    'previous_posts_link' => get_previous_posts_link()
+	  ));
+	}
+
+### Create the post_previews mustache template
+
+To display the data gathered by the previous post we need to create a template.
+
+	touch mvc/templates/post_previews.mustache
+
+We will then output the fields from each post, using the syntax {{#posts}} {{/posts}} to create a loop of each item found in the posts array, and then referencing the various fields from the getWordpressPostsFromLoop function.
+
+	{{#posts}}
+		<h2><a href="{{permalink}}">{{{title}}}</a></h2>
+		<p>{{time}}</p>
+		{{{excerpt}}}
+	{{/posts}}
+	
+To finish off, we will use the syntax {{#next_posts_link}} {{/next_posts_link}} to show the next_posts_link only if it was found. Its slightly confusing having this syntax both loop and provide an if statement, but thats just the way mustache is. Once you get used to it, its not too challenging.
+
+	<ul>
+		{{#next_posts_link}}<li>{{{next_posts_link}}}</li>{{/next_posts_link}}
+		{{#previous_posts_link}}<li>{{{previous_posts_link}}}</li>{{/previous_posts_link}}
+	</ul>
+
+### Set up index.php to load our post previews
+
+All we need to do to load that basic code is to set up our default file, index.php.
+
+	<?php
+	//require the site controller we just created
+	require_once(dirname(__FILE__).'/mvc/controllers/site_controller.php');
+	
+	//init the site controller
+	$siteController = new SiteController();
+	
+	//call the showPostPreviews function
+	$siteController->showPostPreviews();
+  
+	?>
+	
+Load the homepage of your site, and you will see the post previews.
+
+### Create the single post function, template and page
+
+Add a function to site_controller.php, this is like the first, but checks if a single post is found, and if it is, renders just that one with the field post.
+
+	public function showPost() {
+	  $posts = ChesterWPCoreDataHelpers::getWordpressPostsFromLoop();
+	  if (isset($posts[0])) {
+	    echo $this->renderPage('post', array(
+	      'post' => $posts[0]
+	    ));
+	  }
+	}
+
+Create a new mustache template to display the post.
+
+	touch mvc/templates/post.mustache
+
+This time we will output the content instead of the excerpt, and only render a post if one is provided.
+
+	{{#post}}
+		<h1><a href="{{permalink}}">{{{title}}}</a></h1>
+		<p>{{time}}</p>
+		{{{content}}}
+	{{/post}}
+	
+Create the WordPress template single.php to handle the routing.
+
+	touch single.php
+	
+Then its much the same as the index.php
+
+	<?php
+
+	require_once(dirname(__FILE__).'/mvc/controllers/site_controller.php');
+
+	$siteController = new SiteController();
+	$siteController->showPost();
+  
+	?>
+	
+Now when you select an item in the archive the post will be displayed.

@@ -1,0 +1,9 @@
+{{#posts}}
+	<h2><a href="{{permalink}}">{{{title}}}</a></h2>
+	<p>{{time}}</p>
+	{{{excerpt}}}
+{{/posts}}
+<ul>
+	{{#next_posts_link}}<li>{{{next_posts_link}}}</li>{{/next_posts_link}}
+	{{#previous_posts_link}}<li>{{{previous_posts_link}}}</li>{{/previous_posts_link}}
+</ul>
