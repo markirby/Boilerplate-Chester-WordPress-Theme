@@ -90,6 +90,14 @@ header.mustache is loaded first, so we will take some concepts from [HTML5Boiler
 
 	touch mvc/templates/header.mustache
 
+The fields provided by Chester automatically to the header template that we will use are:
+
+* blog_title - the page/post title and blog title
+* charset - charset for the site
+* template_directory - directory of the template root, used to load favicons, css, js etc
+
+The rest are documented at http://markirby.github.com/Chester-WordPress-MVC-Theme-Framework
+
 I'm going to add some conditional comments to identify versions of IE used, and set up the no-js default ready for when we load modernizr which will turn it to js, if js is supported.
 
 	<!DOCTYPE html>
@@ -101,7 +109,7 @@ I'm going to add some conditional comments to identify versions of IE used, and 
 Here we load some more defaults, and output the title (which could contain html, hence the triple mustache)
 
 	  <head>
-	    <title>{{{title}}}</title>
+	    <title>{{{blog_title}}}</title>
     
 	    <meta charset="{{charset}}" />
 	    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -125,6 +133,8 @@ The stylesheets section comes next, with some settings that allow a responsive, 
 
 The technique below requires you have 3 stylesheets, one for the mobile first styles called global.css, then one for each further breakpoint, I've used layout-breakpoint1.css and layout-breakpoint2.css. The technique is described in more detail over at http://adactio.com/journal/4494/.
 
+For users of IE6 we link to the universal-ie6-css created by Andy Clarke, which presents a clean linearised view for IE6 users.
+
 		  <!-- stylesheets -->
 
 		  <!--[if ! lte IE 6]><!-->
@@ -135,9 +145,56 @@ The technique below requires you have 3 stylesheets, one for the mobile first st
 		  <![endif]-->
 
 		  <link rel="stylesheet" href="{{template_directory}}/css/layout-breakpoint1.css" media="all and (min-width: 30.625em)">
-		  <link rel="stylesheet" href="<?php bloginfo('template_url'); ?>/css/layout-breakpoint2.css" media="all and (min-width: 35em)">
+		  <link rel="stylesheet" href="{{template_directory}}/css/layout-breakpoint2.css" media="all and (min-width: 35em)">
 
 		  <!--[if (! lte IE 6)&(lt IE 9)&(!IEMobile)]>
 		    <link rel="stylesheet" href="{{template_directory}}/css/layout-breakpoint1.css" media="all">
-		    <link rel="stylesheet" href="<?php bloginfo('template_url'); ?>/css/layout-breakpoint2.css" media="all">
+		    <link rel="stylesheet" href="{{template_directory}}/css/layout-breakpoint2.css" media="all">
 		  <![endif]-->
+		
+### header_close.mustache
+
+We need to have the end of the header in a separate file due to the fact Chester needs to call wp_head() which echos out the content. There is no way of getting the wp_head data returned as a string, so we have to unfortunately load the two separate files.
+
+All we are doing in our header_close is closing some tags and dropping in an IE upgrade notice for users of IE6.
+
+	touch mvc/templates/header_close.mustache
+	
+Here is the content:
+
+		</head>
+	<body>
+	  <!--[if lt IE 7]>
+	      <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+	  <![endif]-->
+
+### site_title.mustache and site_title_on_home.mustache
+
+A best practice for good HTML structure and SEO is to have the site title inside an H1 on the homepage, but for other pages to have their main title (e.g. section title, page title, post title) as the H1. Chester allows you to specify two templates, site_title_on_home.mustache which will only be loaded if the user is on the home page, and site_title.mustache for everywhere else.
+
+	touch mvc/templates/site_title.mustache
+	touch mvc/templates/site_title_on_home.mustache
+	
+
+The fields provided by Chester automatically to the site title templates that we will use are:
+
+* blog_name - the sites name
+	
+The code for site_title.mustache uses a p tag with a class so it can be styled in the same way as the h1:
+
+	<p class="site-title"><a href="/">{{blog_name}}</a></p>
+
+The code for site_title_on_home.mustache uses an h1 tag:
+
+	<h1 class="site-title">{{blog_name}}</h1>
+
+### footer.mustache
+
+Chester automatically echos the wp_footer() command, and then we just need to load the mustache template to close off the site.
+
+	touch mvc/templates/footer.mustache
+
+Just a couple of closing tags needed:
+
+	    </body>
+	</html>
