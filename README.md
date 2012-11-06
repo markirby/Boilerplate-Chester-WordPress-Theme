@@ -338,7 +338,7 @@ Here is the code to add. Note we use the {{has_tags}} provided by Chester to sho
 	{{#has_tags}}
 		<ul>
 			{{#the_tags}}
-			<li><a href="/{{slug}}">{{name}}</a></li>
+			<li><a href="{{tag_link}}">{{name}}</a></li>
 			{{/the_tags}}
 		</ul>
 	{{/has_tags}}
@@ -369,4 +369,4 @@ Update post_previews.mustache to look like the following:
 		{{#previous_posts_link}}<li>{{{previous_posts_link}}}</li>{{/previous_posts_link}}
 	</ul>
 
-View your site, and you should see the tags in both places. 
+View your site, and you should see the tags in both places. Click on a tag to see that tags archive, rendered using the post_previews template.
