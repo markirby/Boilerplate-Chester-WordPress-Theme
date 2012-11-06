@@ -370,3 +370,49 @@ Update post_previews.mustache to look like the following:
 	</ul>
 
 View your site, and you should see the tags in both places. Click on a tag to see that tags archive, rendered using the post_previews template.
+
+## Add categories to the boilerplate
+
+We are going to add categories in a similar way. First set your sample posts to some categories.
+
+### Create a subtemplate to render categories consistently on both posts and previews
+
+	touch mvc/templates/categories.mustache
+	
+Add the following:
+
+	{{#has_categories}}
+		<ul>
+			{{#the_categories}}
+			<li><a href="{{category_link}}">{{name}}</a></li>
+			{{/the_categories}}
+		</ul>
+	{{/has_categories}}
+	
+### Include the subtemplate in posts and post_previews
+
+Update post.mustache to look like the following:
+
+	{{#post}}
+		<h1><a href="{{permalink}}">{{{title}}}</a></h1>
+		<p>{{time}}</p>
+		{{{content}}}
+		{{> tags}}
+		{{> categories}}
+	{{/post}}
+
+Update post_previews.mustache to look like the following:
+
+	{{#posts}}
+		<h2><a href="{{permalink}}">{{{title}}}</a></h2>
+		<p>{{time}}</p>
+		{{{excerpt}}}
+		{{> tags}}
+		{{> categories}}
+	{{/posts}}
+	<ul>
+		{{#next_posts_link}}<li>{{{next_posts_link}}}</li>{{/next_posts_link}}
+		{{#previous_posts_link}}<li>{{{previous_posts_link}}}</li>{{/previous_posts_link}}
+	</ul>
+
+Now reload and click on a category to explore those.
