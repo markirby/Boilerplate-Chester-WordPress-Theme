@@ -320,3 +320,53 @@ Then its much the same as the index.php
 	?>
 	
 Now when you select an item in the archive the post will be displayed.
+
+## Add tags to the boilerplate
+
+Now we are going to add support for tags, providing a way of displaying tags in posts and post previews, and creating an archive for each tag.
+
+Add some tags to your sample posts before we begin.
+
+### Create a subtemplate to render tags consistently on both posts and previews
+
+We are going to use the same html to display tags on both posts and previews. To do this we can create a template called tags, which we will include from the other templates.
+
+	touch mvc/templates/tags.mustache
+
+Here is the code to add. Note we use the {{has_tags}} provided by Chester to show if we have tags or not. This is documented along with all the other available variables in the [http://markirby.github.com/Chester-WordPress-MVC-Theme-Framework/#chesterwpcoredatahelpers-wp_core_data_helpers-php/getwordpresspostsfromloop-dateformat-false](Chester documentation).
+
+	{{#has_tags}}
+		<ul>
+			{{#the_tags}}
+			<li><a href="/{{slug}}">{{name}}</a></li>
+			{{/the_tags}}
+		</ul>
+	{{/has_tags}}
+	
+### Include the subtemplate in posts and post_previews
+
+Using the {{> tags}} syntax we can include the tags.mustache file in our other templates.
+
+Update post.mustache to look like the following:
+
+	{{#post}}
+		<h1><a href="{{permalink}}">{{{title}}}</a></h1>
+		<p>{{time}}</p>
+		{{{content}}}
+		{{> tags}}
+	{{/post}}
+
+Update post_previews.mustache to look like the following:
+
+	{{#posts}}
+		<h2><a href="{{permalink}}">{{{title}}}</a></h2>
+		<p>{{time}}</p>
+		{{{excerpt}}}
+		{{> tags}}
+	{{/posts}}
+	<ul>
+		{{#next_posts_link}}<li>{{{next_posts_link}}}</li>{{/next_posts_link}}
+		{{#previous_posts_link}}<li>{{{previous_posts_link}}}</li>{{/previous_posts_link}}
+	</ul>
+
+View your site, and you should see the tags in both places. 
