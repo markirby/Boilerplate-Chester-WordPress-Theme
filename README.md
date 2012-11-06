@@ -416,3 +416,129 @@ Update post_previews.mustache to look like the following:
 	</ul>
 
 Now reload and click on a category to explore those.
+
+
+## Adding some basic styles to create a responsive sidebar
+
+Next we are going to create a sidebar to list categories, tags and pages (which we will add).
+
+### Installing compass to help keep our css modular
+
+I believe in keeping CSS modular and clean. I'm going to show you how to use [http://compass-style.org/](compass) to build your 3 responsive stylesheets in an easy way that works across all browsers, including IE6+, and on all mobile devices. We won't be using [http://sass-lang.com/](SASS) here, but with compass comes the ability to use SASS, so its worth looking into.
+
+[http://compass-style.org/install/](Follow the instructions here) to install compass.
+
+If the instructions aren't available, you basically need to install ruby and then run
+
+	gem update --system
+	gem install compass
+
+### Install rake to allow us to easily set up the compass watch command
+
+This will allow you easily run the script to watch your SASS folders which automatically rebuilds your CSS everytime you save a file. If you have installed compass, all you need to do is run:
+
+	gem install rake
+	
+### Create your rakefile to run the compass watch command
+
+	touch Rakefile
+	
+Then open it and add the following:
+
+	desc 'Compile SCSS'
+	task :compile_scss do 
+	    current_location = File.dirname(__FILE__)
+	    sh "compass compile --sass-dir #{current_location}/sass-css --css-dir #{current_location}/css -I #{current_location}/sass -e production"
+	end
+
+	desc 'Watch SCSS'
+	task :watch_scss do 
+	    current_location = File.dirname(__FILE__)
+	    sh "compass watch --sass-dir #{current_location}/sass-css --css-dir #{current_location}/css -I #{current_location}/sass -e production"
+	end
+
+To remind yourself of the commands available to you, run
+
+	rake -T
+	
+Once we have set up our folder structure you can run the commands with
+
+	rake compile_scss
+	
+Which performs a one off compilation of SASS to CSS, or...
+
+	rake watch_scss
+	
+Which will rewrite the SASS to CSS everytime you save a SASS file, until you close the terminal.
+
+### Set up your SASS folders and files
+
+First we will create 3 files as SASS versions of the 3 CSS files we already created. 
+	
+	mkdir sass-css
+	touch sass-css/global.scss
+	touch sass-css/layout-breakpoint1.scss
+	touch sass-css/layout-breakpoint2.scss
+
+Next we will create a file system for you to place various SASS modules. 
+
+	mkdir sass
+	mkdir sass/libs
+	mkdir sass/modules
+	mkdir sass/modules/grids
+	mkdir sass/modules/grids/base-grid
+	mkdir sass/libs/html5boilerplate
+	touch sass/libs/html5boilerplate/normalize.scss
+	touch sass/libs/html5boilerplate/main.scss
+	touch sass/modules/grids/base-grid/base-grid.scss
+	touch sass/modules/grids/base-grid/base-grid-breakpoint1.scss
+	touch sass/modules/grids/base-grid/base-grid-breakpoint2.scss
+	
+### Link to these new modules from within the sass-css folder
+
+Open sass-css/global.scss and add the following to link to the normlize.scss, main.scss and base-grid.scss files we just created. This will form our global.css stylesheet which will render on all browsers, regardless of width. It is our mobile first stylesheet.
+
+	@import "libs/html5boilerplate/normalize.scss";
+	@import "libs/html5boilerplate/main.scss";
+	@import "modules/grids/base-grid/base-grid.scss";
+
+Open sass-css/layout-breakpoint1.scss and link to base-grid-breakpoint1.scss.
+
+	@import "modules/grids/base-grid/base-grid-breakpoint1.scss"
+
+Open sass-css/layout-breakpoint2.scss and link to base-grid-breakpoint2.scss.
+
+	@import "modules/grids/base-grid/base-grid-breakpoint2.scss"
+
+### Add the normalize and main CSS files
+
+To start with we will add some basic css styles from [http://html5boilerplate.com/](HTML5Boilerplate).
+
+Open sass/libs/html5-boilerplate/normalize.scss and paste in the content from https://raw.github.com/h5bp/html5-boilerplate/master/css/normalize.css to patch a number of bugs and get browsers working in the same way..
+
+Open sass/libs/html5-boilerplate/main.scss and paste in the content from https://raw.github.com/h5bp/html5-boilerplate/master/css/main.css which gives us some opinionated defaults from HTML5Boilerplate.
+
+Our site now has some reasonable and consistent styles. As this is a boilerplate, we won't be adding any more textual styles. All that remains is to create a simple grid to hold our sidebar and main content.
+
+### Start the rake script to run compass
+
+Now lets build our stylesheets and listen for any other changes.
+
+Run the following:
+
+	rake watch_scss
+	
+Now, all being well, you should be able to refresh the site and see your new styles implemented.
+
+### Notes for git users
+
+It would now be a good idea to update your .gitignore with the following:
+
+	.sass-cache/
+	
+You may also want to ignore the css files to force people to build the latest SASS. 
+
+### Build basic grid template
+
+
+
