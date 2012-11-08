@@ -156,7 +156,7 @@ For users of IE6 we link to the universal-ie6-css created by Andy Clarke, which 
 
 We need to have the end of the header in a separate file due to the fact Chester needs to call wp_head() which echos out the content. There is no way of getting the wp_head data returned as a string, so we have to unfortunately load the two separate files.
 
-All we are doing in our header_close is closing some tags and dropping in an IE upgrade notice for users of IE6.
+In our header_close we are closing some tags, dropping in an IE upgrade notice for users of IE6 and showing a title.
 
 	touch mvc/templates/header_close.mustache
 	
@@ -167,6 +167,10 @@ Here is the content:
 	  <!--[if lt IE 7]>
 	      <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
 	  <![endif]-->
+	
+		{{{siteTitleHTML}}}
+		
+This tag {{{siteTitleHTML}}} may seem mysterious, but it is automatically passed to header_close by Chester and contains the content of the templates we will set up below.
 
 ### site_title.mustache and site_title_on_home.mustache
 
@@ -598,7 +602,7 @@ Here is the new site controller, note how we now call render, as we don't want t
 	    $posts = ChesterWPCoreDataHelpers::getWordpressPostsFromLoop();
 	    if (isset($posts[0])) {
       
-	      $contentBlock1 = $this->renderPage('post', array(
+	      $contentBlock1 = $this->render('post', array(
 	        'post' => $posts[0]
 	      ));
       
@@ -634,18 +638,18 @@ Paste the following into sass/modules/grids/grid_two_column/grid_two_column.scss
 	
 This will ensure a little padding on either side, each column will flow and there is a max-width to ensure the content works on large screens.
 
-You will now see an issue, the page title no longer lines up with the grid. This is because it isn't in the grid. A simple fix is to wrap the site_title and site_title_on_home templates with the same .grid-wrapper div. This gives you more flexibility than wrapping the whole site in a div as each block can then be moved if your design needs it.
+You will now see an issue, the page title no longer lines up with the grid. This is because it isn't in the grid. A simple fix is to wrap the site title in the header_close template with the same .grid-wrapper div. This gives you more flexibility than wrapping the whole site in a div as each block can then be moved if your design needs it.
 
-Paste the following into mvc/templates/site_title.mustache:
+Paste the following into mvc/templates/header_close.mustache:
 
+	</head>
+<body>
+  <!--[if lt IE 7]>
+      <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+  <![endif]-->
+	
 	<div class="grid-wrapper">
-		<p class="site-title"><a href="/">{{blog_name}}</a></p>
+		{{{siteTitleHTML}}}
 	</div>
 	
-And into mvc/templates/site_title_on_home.mustache:
-
-	<div class="grid-wrapper">
-		<h1 class="site-title">{{blog_name}}</h1>
-	</div>
-
-It should now line up. If you decide to add anything else to site_title, it might be easier to handle this yourself, and leave those templates blank. 
+It should now line up.

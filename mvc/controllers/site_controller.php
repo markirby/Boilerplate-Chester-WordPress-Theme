@@ -24,7 +24,7 @@ class SiteController extends ChesterBaseController {
     $posts = ChesterWPCoreDataHelpers::getWordpressPostsFromLoop();
     if (isset($posts[0])) {
       
-      $contentBlock1 = $this->renderPage('post', array(
+      $contentBlock1 = $this->render('post', array(
         'post' => $posts[0]
       ));
       
