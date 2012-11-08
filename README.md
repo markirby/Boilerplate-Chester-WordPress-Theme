@@ -551,10 +551,10 @@ We are now going to make a simple grid using 2 columns, which we can push separa
 Now paste in the following which gives us two divs, wrapped in a container.
 
 	<div class="grid-wrapper">
-		<div class="grid-column-1">
+		<div class="grid-two-column--column-1">
 			{{{contentBlock1}}}
 		</div>
-		<div class="grid-column-2">
+		<div class="grid-two-column--column-2">
 			{{{contentBlock2}}}
 		</div>
 	</div>
@@ -653,3 +653,33 @@ Paste the following into mvc/templates/header_close.mustache:
 	</div>
 	
 It should now line up.
+
+### Set the column to shift on the first breakpoint
+
+Paste the following into sass/modules/grids/grid_two_column/grid_two_column_breakpoint2.scss:
+
+	.grid-two-column--column-1 {
+	  float: left;
+	  width: 65.666666%;
+	  padding-right: 1%;
+	}
+
+	.grid-two-column--column-2 {
+	  float: right;
+	  width: 32.333333%;
+	  padding-left: 1%;
+	}
+	
+And thats it. If you want to adjust the breakpoints, change them in index.html to be different ems. 
+
+You could also move the above into the first breakpoint (sass/modules/grids/grid_two_column/grid_two_column_breakpoint1.scss) and do something else in this breakpoint. Play around.
+
+## Creating custom post types with custom fields
+
+Chester makes it very straightforward to create custom post types, with unlimited custom fields. We are going to use it to create a sample post type named gallery for adding art galleries to our site, with the following fields:
+
+* title
+* address with field for address, field for link to a map
+* a featured image
+* content about the gallery
+* a link the the galleries website
