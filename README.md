@@ -486,29 +486,29 @@ Next we will create a file system for you to place various SASS modules.
 	mkdir sass/libs
 	mkdir sass/modules
 	mkdir sass/modules/grids
-	mkdir sass/modules/grids/base-grid
+	mkdir sass/modules/grids/grid_two_column
 	mkdir sass/libs/html5boilerplate
 	touch sass/libs/html5boilerplate/normalize.scss
 	touch sass/libs/html5boilerplate/main.scss
-	touch sass/modules/grids/base-grid/base-grid.scss
-	touch sass/modules/grids/base-grid/base-grid-breakpoint1.scss
-	touch sass/modules/grids/base-grid/base-grid-breakpoint2.scss
+	touch sass/modules/grids/grid_two_column/grid_two_column.scss
+	touch sass/modules/grids/grid_two_column/grid_two_column_breakpoint1.scss
+	touch sass/modules/grids/grid_two_column/grid_two_column_breakpoint2.scss
 	
 ### Link to these new modules from within the sass-css folder
 
-Open sass-css/global.scss and add the following to link to the normlize.scss, main.scss and base-grid.scss files we just created. This will form our global.css stylesheet which will render on all browsers, regardless of width. It is our mobile first stylesheet.
+Open sass-css/global.scss and add the following to link to the normlize.scss, main.scss and grid_two_column.scss files we just created. This will form our global.css stylesheet which will render on all browsers, regardless of width. It is our mobile first stylesheet.
 
 	@import "libs/html5boilerplate/normalize.scss";
 	@import "libs/html5boilerplate/main.scss";
-	@import "modules/grids/base-grid/base-grid.scss";
+	@import "modules/grids/grid_two_column/grid_two_column.scss";
 
-Open sass-css/layout-breakpoint1.scss and link to base-grid-breakpoint1.scss.
+Open sass-css/layout-breakpoint1.scss and link to grid_two_column_breakpoint1.scss.
 
-	@import "modules/grids/base-grid/base-grid-breakpoint1.scss"
+	@import "modules/grids/grid_two_column/grid_two_column_breakpoint1.scss"
 
-Open sass-css/layout-breakpoint2.scss and link to base-grid-breakpoint2.scss.
+Open sass-css/layout-breakpoint2.scss and link to grid_two_column_breakpoint2.scss.
 
-	@import "modules/grids/base-grid/base-grid-breakpoint2.scss"
+	@import "modules/grids/grid_two_column/grid_two_column_breakpoint2.scss"
 
 ### Add the normalize and main CSS files
 
@@ -540,5 +540,112 @@ You may also want to ignore the css files to force people to build the latest SA
 
 ### Build basic grid template
 
+We are now going to make a simple grid using 2 columns, which we can push separate content into using the templating system.
 
+	touch mvc/templates/grid_two_column.mustache
+	
+Now paste in the following which gives us two divs, wrapped in a container.
 
+	<div class="grid-wrapper">
+		<div class="grid-column-1">
+			{{{contentBlock1}}}
+		</div>
+		<div class="grid-column-2">
+			{{{contentBlock2}}}
+		</div>
+	</div>
+
+### Create the sidebar
+
+We are going to create a dummy sidebar for now with a title and some sample text.
+
+	touch mvc/templates/sidebar.mustache
+	
+Paste in
+
+	<h2>Sidebar</h2>
+	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc nec sem at neque mollis ornare. Fusce tincidunt nunc id mi venenatis vestibulum. Proin nec libero ut urna lacinia luctus. Vestibulum id augue arcu, vel ornare ante.</p>
+
+### Put the main content and sidebar into the grid
+
+Next we need update site controller so our main content is placed into contentBlock1, and then echoed instead of being echoed directly.
+
+Here is the new site controller, note how we now call render, as we don't want to include the header and footer at this point. Then we call renderPage to render the grid, as we do now want the header and footer.
+
+	<?php
+
+	class SiteController extends ChesterBaseController {
+  
+	  public function showPostPreviews() {
+	    $posts = ChesterWPCoreDataHelpers::getWordpressPostsFromLoop();
+    
+	    $contentBlock1 = $this->render('post_previews', array(
+	      'posts' => $posts,
+	      'next_posts_link' => get_next_posts_link(),
+	      'previous_posts_link' => get_previous_posts_link()
+	    ));
+    
+	    $contentBlock2 = $this->render('sidebar');
+    
+	    echo $this->renderPage('grid_two_column', array(
+	      'contentBlock1' => $contentBlock1,
+	      'contentBlock2' => $contentBlock2
+	    ));
+    
+	  }
+  
+	  public function showPost() {
+	    $posts = ChesterWPCoreDataHelpers::getWordpressPostsFromLoop();
+	    if (isset($posts[0])) {
+      
+	      $contentBlock1 = $this->renderPage('post', array(
+	        'post' => $posts[0]
+	      ));
+      
+	      $contentBlock2 = $this->render('sidebar');
+      
+	      echo $this->renderPage('grid_two_column', array(
+	        'contentBlock1' => $contentBlock1,
+	        'contentBlock2' => $contentBlock2
+	      ));
+      
+	    }
+	  }
+	}
+	?>
+	
+### Style the grid mobile first
+
+Lets make our mobile style first. 
+
+Ensure you have run:
+
+	rake watch_scss
+	
+Paste the following into sass/modules/grids/grid_two_column/grid_two_column.scss:
+
+	.grid-wrapper {
+	  width: 96%;
+	  padding-left: 2%;
+	  padding-right: 2%;
+	  margin: 0 0 0 0;
+	  max-width: 1140px;
+	}
+	
+This will ensure a little padding on either side, each column will flow and there is a max-width to ensure the content works on large screens.
+
+You will now see an issue, the page title no longer lines up with the grid. This is because it isn't in the grid. A simple fix is to wrap the site_title and site_title_on_home templates with the same .grid-wrapper div. This gives you more flexibility than wrapping the whole site in a div as each block can then be moved if your design needs it.
+
+Paste the following into mvc/templates/site_title.mustache:
+
+	<div class="grid-wrapper">
+		<p class="site-title"><a href="/">{{blog_name}}</a></p>
+	</div>
+	
+And into mvc/templates/site_title_on_home.mustache:
+
+	<div class="grid-wrapper">
+		<h1 class="site-title">{{blog_name}}</h1>
+	</div>
+
+It should now line up. If you decide to add anything else to site_title, it might be easier to handle this yourself, and leave those templates blank. 
