@@ -50,5 +50,24 @@ class SiteController extends ChesterBaseController {
       'contentBlock2' => $contentBlock2
     ));    
   }
+  
+  public function showHome() {
+    $posts = ChesterWPCoreDataHelpers::getWordpressPostsFromLoop();
+    
+    $contentBlock1 = $this->render('post_previews', array(
+      'posts' => $posts,
+      'next_posts_link' => get_next_posts_link(),
+      'previous_posts_link' => get_previous_posts_link()
+    ));
+        
+    $latestGallery = $this->render('galleries', array(
+      'posts' => ChesterWPCoreDataHelpers::getPosts(false, 'gallery', '1', array('location', 'map', 'website'))
+    ));
+    
+    echo $this->renderPage('grid_two_column', array(
+      'contentBlock1' => $contentBlock1,
+      'contentBlock2' => $latestGallery
+    ));
+  }
 }
 ?>

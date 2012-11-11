@@ -838,4 +838,50 @@ Imagine we don't want pagination for this special type, but just want to display
 	}
 	
 Setting getWordpressPostsFromLoop, $fetchAllPosts to true has the desired effect.
+
+
+## Pick galleries to highlight on the home page
+
+To conclude we will pick the latest gallery to put it on the home page in the sidebar.
+
+### Add showHome() to the site controller
+
+Open mvc/controllers/site_controller.php and add this function:
+
+	public function showHome() {
+	  $posts = ChesterWPCoreDataHelpers::getWordpressPostsFromLoop();
+  
+	  $contentBlock1 = $this->render('post_previews', array(
+	    'posts' => $posts,
+	    'next_posts_link' => get_next_posts_link(),
+	    'previous_posts_link' => get_previous_posts_link()
+	  ));
+      
+	  $latestGallery = $this->render('galleries', array(
+	    'posts' => ChesterWPCoreDataHelpers::getPosts(false, 'gallery', '1', array('location', 'map', 'website'))
+	  ));
+  
+	  echo $this->renderPage('grid_two_column', array(
+	    'contentBlock1' => $contentBlock1,
+	    'contentBlock2' => $latestGallery
+	  ));
+	}
+
+We use the ChesterWPCoreDataHelpers::getPosts feature, which we pass false for dateFormat, 'gallery' for post type, '1' for the number of posts we want and our custom fields.
+
+### Add home.php
+
+Add the WordPress template home.php to access the new function when we view the homepage.
+
+	touch home.php
 	
+Paste:
+
+	<?php
+
+	require_once(dirname(__FILE__).'/mvc/controllers/site_controller.php');
+
+	$siteController = new SiteController();
+	$siteController->showHome();
+
+	?>
