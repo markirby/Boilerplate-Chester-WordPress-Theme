@@ -745,3 +745,74 @@ We then need to create two files:
 In each paste:
 
 	<?php ChesterWPAlchemyHelpers::showFields($mb); ?>
+
+Go ahead now and create some sample galleries.
+	
+## Displaying custom post types with custom fields
+
+### Update the permalinks for readable urls
+
+Lets fix the permalinks structure to show SEO friendly URLS - go to the admin area, select settings -> permalinks and pick the option 'Post name'. Update the .htaccess as instructed.
+
+Go to {your site url}/galleries.
+
+You should see the galleries you entered listed in the same style as the posts. The new fields won't show up. Imagine we want to display all these galleries with the custom fields.
+
+### Add to the controller to handle the new fields
+
+Open mvc/controllers/site_controller.php
+
+Add the following new function:
+
+	public function showGalleries() {
+    $posts = ChesterWPCoreDataHelpers::getWordpressPostsFromLoop(false, array('location', 'map', 'website'));
+
+    $contentBlock1 = $this->render('galleries', array(
+      'posts' => $posts
+    ));
+      
+    $contentBlock2 = $this->render('sidebar');
+    
+    echo $this->renderPage('grid_two_column', array(
+      'contentBlock1' => $contentBlock1,
+      'contentBlock2' => $contentBlock2
+    ));    
+  }
+
+This calls getWordpressPostsFromLoop with an array containing the names of all of the new fields we added in functions.php. This is all thats needed to pull them out. The featured image will be pulled out automatically.
+
+### Create the new mustache template
+
+	touch mvc/templates/galleries.mustache
+	
+Here is where we will load our HTML:
+
+	<h1>Galleries</h1>
+	{{#posts}}
+		<h2>{{{title}}}</h2>
+		{{#location}}<p>{{#map}}<a href="{{map}}">{{/map}}{{location}}{{#map}}</a>{{/map}}</p>{{/location}}
+		{{#featured_image_url_medium}}<img src="{{featured_image_url_medium}}" />{{/featured_image_url_medium}}
+		{{{content}}}
+		{{#website}}<p><a href="{{website}}">Visit the website -></a></p>{{/website}}
+	{{/posts}}
+	
+Note how we check conditionally if each item has been found before outputting surrounding HTML. This is a good practice to avoid lots of empty tags if people haven't fully filled out the forms.
+
+### Create the WordPress template to route
+
+Create a WP template file to capture this URL and route it.
+
+	touch archive-gallery.php
+	
+Paste in:
+
+	<?php
+
+	require_once(dirname(__FILE__).'/mvc/controllers/site_controller.php');
+
+	$siteController = new SiteController();
+	$siteController->showGalleries();
+
+	?>
+
+This will display our galleries in the correct format.

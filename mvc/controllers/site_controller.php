@@ -23,7 +23,6 @@ class SiteController extends ChesterBaseController {
   public function showPost() {
     $posts = ChesterWPCoreDataHelpers::getWordpressPostsFromLoop();
     if (isset($posts[0])) {
-      
       $contentBlock1 = $this->render('post', array(
         'post' => $posts[0]
       ));
@@ -34,8 +33,22 @@ class SiteController extends ChesterBaseController {
         'contentBlock1' => $contentBlock1,
         'contentBlock2' => $contentBlock2
       ));
-      
     }
+  }
+  
+  public function showGalleries() {
+    $posts = ChesterWPCoreDataHelpers::getWordpressPostsFromLoop(false, array('location', 'map', 'website'));
+
+    $contentBlock1 = $this->render('galleries', array(
+      'posts' => $posts
+    ));
+      
+    $contentBlock2 = $this->render('sidebar');
+    
+    echo $this->renderPage('grid_two_column', array(
+      'contentBlock1' => $contentBlock1,
+      'contentBlock2' => $contentBlock2
+    ));    
   }
 }
 ?>

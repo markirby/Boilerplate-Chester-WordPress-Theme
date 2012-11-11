@@ -1,0 +1,8 @@
+<h1>Galleries</h1>
+{{#posts}}
+	<h2>{{{title}}}</h2>
+	{{#location}}<p>{{#map}}<a href="{{map}}">{{/map}}{{location}}{{#map}}</a>{{/map}}</p>{{/location}}
+	{{#featured_image_url_medium}}<img src="{{featured_image_url_medium}}" />{{/featured_image_url_medium}}
+	{{{content}}}
+	{{#website}}<p><a href="{{website}}">Visit the website -></a></p>{{/website}}
+{{/posts}}
