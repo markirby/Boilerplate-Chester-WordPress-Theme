@@ -816,3 +816,26 @@ Paste in:
 	?>
 
 This will display our galleries in the correct format.
+
+### Display all galleries
+
+Imagine we don't want pagination for this special type, but just want to display them all. To do this, update the showGalleries call in mvc/controllers/site_controller.php
+
+	public function showGalleries() {
+		//Set third variable to true
+	  $posts = ChesterWPCoreDataHelpers::getWordpressPostsFromLoop(false, array('location', 'map', 'website'), true);
+
+	  $contentBlock1 = $this->render('galleries', array(
+	    'posts' => $posts
+	  ));
+    
+	  $contentBlock2 = $this->render('sidebar');
+  
+	  echo $this->renderPage('grid_two_column', array(
+	    'contentBlock1' => $contentBlock1,
+	    'contentBlock2' => $contentBlock2
+	  ));    
+	}
+	
+Setting getWordpressPostsFromLoop, $fetchAllPosts to true has the desired effect.
+	

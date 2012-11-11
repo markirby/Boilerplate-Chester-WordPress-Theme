@@ -37,7 +37,7 @@ class SiteController extends ChesterBaseController {
   }
   
   public function showGalleries() {
-    $posts = ChesterWPCoreDataHelpers::getWordpressPostsFromLoop(false, array('location', 'map', 'website'));
+    $posts = ChesterWPCoreDataHelpers::getWordpressPostsFromLoop(false, array('location', 'map', 'website'), true);
 
     $contentBlock1 = $this->render('galleries', array(
       'posts' => $posts
