@@ -720,8 +720,8 @@ To do this we will update our functions.php to
 
 	$galleryCustomPostType = array(
 		'name' => 'gallery',
-		'displayName' => 'Gallery',
-		'pluralDisplayName' => 'Galleries',
+		'displayName' => 'gallery',
+		'pluralDisplayName' => 'galleries',
 		'enablePostThumbnailSupport' => true,
 		'fieldBlocks' => array($galleryLocationBlock, $galleryInfoBlock)
 	);
