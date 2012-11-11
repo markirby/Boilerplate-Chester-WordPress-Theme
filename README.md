@@ -683,3 +683,65 @@ Chester makes it very straightforward to create custom post types, with unlimite
 * a featured image
 * content about the gallery
 * a link the the galleries website
+
+To do this we will update our functions.php to
+
+	<?php 
+	require_once(dirname(__FILE__).'/lib/chester/require.php');
+
+	$galleryLocationBlock = array(
+	  'name' => 'location',
+		'blockTitle' => 'Gallery Location',
+		'fields' => array(
+			array(
+				'name' => 'location',
+				'labelTitle' => 'Location',
+				'fieldType' => 'textField',
+			),
+			array(
+				'name' => 'map',
+				'labelTitle' => 'Link to a map',
+				'fieldType' => 'textField',
+			)
+		)
+	);
+
+	$galleryInfoBlock = array(
+	  'name' => 'other',
+	  'blockTitle' => 'Other details',
+	  'fields' => array(
+	    array(
+	      'name' => 'website',
+	      'labelTitle' => 'Website address',
+	      'fieldType' => 'textField'
+	    )
+	  )
+	);
+
+	$galleryCustomPostType = array(
+		'name' => 'gallery',
+		'displayName' => 'Gallery',
+		'pluralDisplayName' => 'Galleries',
+		'enablePostThumbnailSupport' => true,
+		'fieldBlocks' => array($galleryLocationBlock, $galleryInfoBlock)
+	);
+
+	$adminSettings = array(
+		'customPostTypes' => array($galleryCustomPostType)
+	);
+
+	$adminController = new ChesterAdminController($adminSettings);
+
+	?>
+
+These settings provide us with the fields we need. 
+
+We then need to create two files:
+
+	mkdir mvc/admin_templates
+	touch mvc/admin_templates/gallery_location.php
+	touch mvc/admin_templates/gallery_other.php
+	
+In each paste:
+
+	<?php ChesterWPAlchemyHelpers::showFields($mb); ?>
