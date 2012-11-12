@@ -546,16 +546,16 @@ You may also want to ignore the css files to force people to build the latest SA
 
 We are now going to make a simple grid using 2 columns, which we can push separate content into using the templating system.
 
-	touch mvc/templates/grid_two_column.mustache
+	touch mvc/templates/grids/grid_two_column.mustache
 	
 Now paste in the following which gives us two divs, wrapped in a container.
 
 	<div class="grid-wrapper">
 		<div class="grid-two-column--column-1">
-			{{{contentBlock1}}}
+			{{{content_block_1}}}
 		</div>
 		<div class="grid-two-column--column-2">
-			{{{contentBlock2}}}
+			{{{content_block_2}}}
 		</div>
 	</div>
 
@@ -572,7 +572,7 @@ Paste in
 
 ### Put the main content and sidebar into the grid
 
-Next we need update site controller so our main content is placed into contentBlock1, and then echoed instead of being echoed directly.
+Next we need update site controller so our main content is placed into content_block_1, and then echoed instead of being echoed directly.
 
 Here is the new site controller, note how we now call render, as we don't want to include the header and footer at this point. Then we call renderPage to render the grid, as we do now want the header and footer.
 
@@ -583,17 +583,17 @@ Here is the new site controller, note how we now call render, as we don't want t
 	  public function showPostPreviews() {
 	    $posts = ChesterWPCoreDataHelpers::getWordpressPostsFromLoop();
     
-	    $contentBlock1 = $this->render('post_previews', array(
+	    $content_block_1 = $this->render('post_previews', array(
 	      'posts' => $posts,
 	      'next_posts_link' => get_next_posts_link(),
 	      'previous_posts_link' => get_previous_posts_link()
 	    ));
     
-	    $contentBlock2 = $this->render('sidebar');
+	    $content_block_2 = $this->render('sidebar');
     
-	    echo $this->renderPage('grid_two_column', array(
-	      'contentBlock1' => $contentBlock1,
-	      'contentBlock2' => $contentBlock2
+	    echo $this->renderPage('grids/grid_two_column', array(
+	      'content_block_1' => $content_block_1,
+	      'content_block_2' => $content_block_2
 	    ));
     
 	  }
@@ -602,15 +602,15 @@ Here is the new site controller, note how we now call render, as we don't want t
 	    $posts = ChesterWPCoreDataHelpers::getWordpressPostsFromLoop();
 	    if (isset($posts[0])) {
       
-	      $contentBlock1 = $this->render('post', array(
+	      $content_block_1 = $this->render('post', array(
 	        'post' => $posts[0]
 	      ));
       
-	      $contentBlock2 = $this->render('sidebar');
+	      $content_block_2 = $this->render('sidebar');
       
-	      echo $this->renderPage('grid_two_column', array(
-	        'contentBlock1' => $contentBlock1,
-	        'contentBlock2' => $contentBlock2
+	      echo $this->renderPage('grids/grid_two_column', array(
+	        'content_block_1' => $content_block_1,
+	        'content_block_2' => $content_block_2
 	      ));
       
 	    }
@@ -767,15 +767,15 @@ Add the following new function:
 	public function showGalleries() {
     $posts = ChesterWPCoreDataHelpers::getWordpressPostsFromLoop(false, array('location', 'map', 'website'));
 
-    $contentBlock1 = $this->render('galleries', array(
+    $content_block_1 = $this->render('galleries', array(
       'posts' => $posts
     ));
       
-    $contentBlock2 = $this->render('sidebar');
+    $content_block_2 = $this->render('sidebar');
     
-    echo $this->renderPage('grid_two_column', array(
-      'contentBlock1' => $contentBlock1,
-      'contentBlock2' => $contentBlock2
+    echo $this->renderPage('grids/grid_two_column', array(
+      'content_block_1' => $content_block_1,
+      'content_block_2' => $content_block_2
     ));    
   }
 
@@ -825,15 +825,15 @@ Imagine we don't want pagination for this special type, but just want to display
 		//Set third variable to true
 	  $posts = ChesterWPCoreDataHelpers::getWordpressPostsFromLoop(false, array('location', 'map', 'website'), true);
 
-	  $contentBlock1 = $this->render('galleries', array(
+	  $content_block_1 = $this->render('galleries', array(
 	    'posts' => $posts
 	  ));
     
-	  $contentBlock2 = $this->render('sidebar');
+	  $content_block_2 = $this->render('sidebar');
   
-	  echo $this->renderPage('grid_two_column', array(
-	    'contentBlock1' => $contentBlock1,
-	    'contentBlock2' => $contentBlock2
+	  echo $this->renderPage('grids/grid_two_column', array(
+	    'content_block_1' => $content_block_1,
+	    'content_block_2' => $content_block_2
 	  ));    
 	}
 	
@@ -851,7 +851,7 @@ Open mvc/controllers/site_controller.php and add this function:
 	public function showHome() {
 	  $posts = ChesterWPCoreDataHelpers::getWordpressPostsFromLoop();
   
-	  $contentBlock1 = $this->render('post_previews', array(
+	  $content_block_1 = $this->render('post_previews', array(
 	    'posts' => $posts,
 	    'next_posts_link' => get_next_posts_link(),
 	    'previous_posts_link' => get_previous_posts_link()
@@ -861,9 +861,9 @@ Open mvc/controllers/site_controller.php and add this function:
 	    'posts' => ChesterWPCoreDataHelpers::getPosts(false, 'gallery', '1', array('location', 'map', 'website'))
 	  ));
   
-	  echo $this->renderPage('grid_two_column', array(
-	    'contentBlock1' => $contentBlock1,
-	    'contentBlock2' => $latestGallery
+	  echo $this->renderPage('grids/grid_two_column', array(
+	    'content_block_1' => $content_block_1,
+	    'content_block_2' => $latestGallery
 	  ));
 	}
 
@@ -885,3 +885,66 @@ Paste:
 	$siteController->showHome();
 
 	?>
+	
+## Create the pattern primer
+
+When you start designing the site, it will be helpful to use a modular approach and assemble each piece of the site as an individual unit, bringing it together at the end, as [shown by Adactio](http://patternprimer.adactio.com/). Chester will enable you to generate a pattern primer automatically, allow you submit templates with custom data and even gives you the basic HTML you might get entered into a WordPress content field for free.
+
+We will show you how to set one up now.
+
+### Update the templates folder to allow automatic output of templates
+
+We can have any number of folders of templates which don't use tags fed into Chester and spat back out as fully formed pattern primers. If that folder is called grids, and the grids contain the {{content_block_x}} tags we use, the template is automatically populated with sample content. If it has another name, it will simply output the files. We already have this set up, so it will work immediately.
+
+For typography we can create some static templates just for the purposes of demoing how the output will look. We might have classes that we will use in other templates, but we want to isolate the design of these classes. Lets create a couple so you can see what I mean.
+
+Lets create these:
+
+	mkdir mvc/templates/typography
+	touch mvc/templates/typography/text-1.mustache
+	touch mvc/templates/typography/text-2.mustache
+
+Then for text-1.mustache:
+
+	<p class="text1">Text one</p>
+	
+For text-2.mustache:
+
+	<p class="text2">Text two</p>
+	
+### Update the site controller to show the patterns
+
+Add this function to mvc/controllers/site_controller.php:
+
+
+	public function showPatternPrimer() {
+	  $patternPrimerController = new ChesterPatternPrimerController();
+  
+	  $post = $patternPrimerController->renderPattern('post', array(
+	    'post' => array(
+	      'permalink' => 'http://brightonculture.co.uk',
+	      'title' => 'Post title',
+	      'time' => '12th Nov 2012',
+	      'content' => '<p>Sample content</p>',
+	    )
+	  ));
+  
+	  $postPreview = $patternPrimerController->renderPattern('post_previews', array(
+	    'posts' => array(
+	      'permalink' => 'http://brightonculture.co.uk',
+	      'title' => 'Post preview title',
+	      'time' => '12th Nov 2012',
+	      'content' => '<p>Sample content</p>',
+	    )
+	  ));
+  
+	  $patternGroup = $patternPrimerController->renderCustomPatternGroup($post . $postPreview, 'modules/');
+  
+	  $patternPrimerController->showPatternPrimer(array('typography', 'grids'), $patternGroup);
+	}
+	
+We use renderPattern() to render our post and post_previews templates with some sample data.
+
+We use renderCustomPatternGroup() to pull the patterns into a group with the name "modules/".
+
+We call showPatternPrimer() to render the contents of typography and grids, and append our new pattern group.
