@@ -948,3 +948,20 @@ We use renderPattern() to render our post and post_previews templates with some 
 We use renderCustomPatternGroup() to pull the patterns into a group with the name "modules/".
 
 We call showPatternPrimer() to render the contents of typography and grids, and append our new pattern group.
+
+### Create the pattern primer page
+
+Now to display the pattern primer, go into the admin section of WordPress and create a page named 'pattern-primer'.
+
+Create the WordPress template:
+
+	touch page-pattern-primer.php
+	
+And link it to the new function:
+
+	<?php
+	require_once(dirname(__FILE__).'/mvc/controllers/site_controller.php');
+
+	$siteController = new SiteController();
+	$siteController->showPatternPrimer();
+	?>
